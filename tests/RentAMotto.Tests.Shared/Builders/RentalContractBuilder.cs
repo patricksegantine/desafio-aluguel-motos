@@ -1,6 +1,6 @@
 ﻿using RentAMotto.Domain.Entities;
 
-namespace RentAMotto.Domain.Tests.Builders;
+namespace RentAMotto.Tests.Shared.Builders;
 
 public class RentalContractBuilder
 {
@@ -9,6 +9,7 @@ public class RentalContractBuilder
     private RentalPlan _rentalPlan = new RentalPlanBuilder().Build();
     private DateTime _startDate = DateTime.Now.AddDays(1);
     private DateTime _expectedEndDate = DateTime.Now.AddDays(10);
+    private Domain.DomainObjects.Enums.RentalStatusType _status = Domain.DomainObjects.Enums.RentalStatusType.Open;
 
     public RentalContractBuilder WithVehicle(Vehicle vehicle)
     {
@@ -37,6 +38,12 @@ public class RentalContractBuilder
     public RentalContractBuilder WithExpectedEndDate(DateTime expectedEndDate)
     {
         _expectedEndDate = expectedEndDate;
+        return this;
+    }
+
+    public RentalContractBuilder WithStatus(Domain.DomainObjects.Enums.RentalStatusType status)
+    {
+        _status = status;
         return this;
     }
 

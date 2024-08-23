@@ -1,7 +1,7 @@
 ﻿using RentAMotto.Domain.DomainObjects.Enums;
 using RentAMotto.Domain.Entities;
 
-namespace RentAMotto.Domain.Tests.Builders;
+namespace RentAMotto.Tests.Shared.Builders;
 
 public class RentalPlanBuilder
 {

@@ -1,8 +1,6 @@
-﻿using RentAMotto.Domain.Tests.Builders;
+﻿using RentAMotto.Tests.Shared.Builders;
 
 namespace RentAMotto.Domain.Tests.Unit;
-
-using Xunit;
 
 public class RentalContractTests
 {

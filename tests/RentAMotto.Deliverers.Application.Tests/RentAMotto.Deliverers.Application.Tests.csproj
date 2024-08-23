@@ -25,7 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\RentAMotto.Domain\RentAMotto.Domain.csproj" />
+		<ProjectReference Include="..\..\src\RentAMotto.Deliverers.Application\RentAMotto.Deliverers.Application.csproj" />
 		<ProjectReference Include="..\RentAMotto.Tests.Shared\RentAMotto.Tests.Shared.csproj" />
 	</ItemGroup>
 

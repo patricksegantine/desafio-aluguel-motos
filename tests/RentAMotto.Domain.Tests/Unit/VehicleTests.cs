@@ -1,5 +1,5 @@
 ﻿using RentAMotto.Domain.DomainObjects.Enums;
-using RentAMotto.Domain.Tests.Builders;
+using RentAMotto.Tests.Shared.Builders;
 
 namespace RentAMotto.Domain.Tests.Unit;
 
