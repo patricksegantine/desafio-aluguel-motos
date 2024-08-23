@@ -26,7 +26,7 @@ Este projeto é uma plataforma de locação de motos que permite aos administrad
   - Permite alterar apenas a placa de uma moto cadastrada indevidamente.
 
 - **Remover uma moto**
-  - Permite remover uma moto que foi cadastrada incorretamente, desde que não tenha registro de loca��es.
+  - Permite remover uma moto que foi cadastrada incorretamente, desde que não tenha registro de locações.
 
 
 ### API Deliverers
@@ -34,7 +34,7 @@ Este projeto é uma plataforma de locação de motos que permite aos administrad
   - Dados do entregador: Identificador, Nome, CNPJ, Data de Nascimento, Número da CNH, Tipo da CNH, Imagem da CNH.
   - Tipos de CNH válidos: A, B ou ambas A+B.
   - O CNPJ é único e não pode se repetir.
-  - O n�mero da CNH é único e não pode se repetir.
+  - O número da CNH é único e não pode se repetir.
 
 - **Enviar foto da CNH**
   - Formatos permitidos: PNG ou BMP.
@@ -48,10 +48,10 @@ Este projeto é uma plataforma de locação de motos que permite aos administrad
     - 45 dias com um custo de R$20,00 por dia.
     - 50 dias com um custo de R$18,00 por dia.
   - A locação deve ter uma data de início, uma data de término e uma data de previsão de término.
-  - O início da locação é o primeiro dia ap�s a data de criação.
+  - O início da locação é o primeiro dia após a data de criação.
   - Somente entregadores habilitados na categoria A podem efetuar uma locação.
 
-- **Informar data de devolução e consultar valor total da loca��o**
+- **Informar data de devolução e consultar valor total da locação**
   - Permite informar a data de devolução da moto e consultar o valor total da locação.
 
 ## Como Rodar Localmente
@@ -63,7 +63,7 @@ Este projeto é uma plataforma de locação de motos que permite aos administrad
 
 ### Passos para Rodar
 
-1. Clone o reposit�rio:
+1. Clone o repositório:
    ```bash
    git clone https://github.com/patricksegantine/desafio-aluguel-motos.git
    cd seu-repositorio
