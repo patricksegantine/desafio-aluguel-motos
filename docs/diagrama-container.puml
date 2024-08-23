@@ -1,0 +1,47 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/master/dist 
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/AzureC4Integration.puml
+!includeurl AzurePuml/Web/AzureWebApp.puml
+!includeurl AzurePuml/Databases/AzureDatabaseForPostgreSQL.puml
+!includeurl AzurePuml/Databases/AzureCosmosDb.puml
+!includeurl AzurePuml/Storage/AzureBlobStorage.puml
+!includeurl AzurePuml/Integration/AzureServiceBusQueue.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!include DEVICONS/angular.puml
+
+SHOW_PERSON_OUTLINE()
+
+title "Diagrama de Container - Ecossistema Aluguel de Motos"
+
+left to right direction
+
+Person(useradmin, "Usuário administrador", "Pessoa que gerencia o sistema cadastrando veículos, planos, etc")
+Person_Ext(userext, "Usuário Entregador", "Pessoa que realiza o cadastro na plataforma, atualiza seus dados e faz contrato de aluguel de motos")
+
+Container_Boundary(c1, "Backoffice") {
+  AzureWebApp(adminapi, "Admin WebAPI", "C#, ASP.NET", "Back-end para interação com a aplicação SPA disponível apenas na rede interna da EDP")
+  AzureWebApp(worker, "Worker", "C#, ASP.NET", "Escuta os eventos de novos veículos cadastrados")
+  AzureServiceBusQueue(rabbitmq, "RabbitMQ", "Pub/Sub")
+  AzureDatabaseForPostgreSQL(postgresql, "PostgreSQL", "SQL")
+  AzureCosmosDb(mongodb, "MongoDB", "NoSQL")
+}
+
+Container_Boundary(c2, "API Pública") {
+  AzureWebApp(deliverapi, "Deliverers WebAPI", "C#, ASP.NET", "Back-end para interação com a aplicação SPA disponível apenas na rede interna da EDP")
+}
+
+BiRel(useradmin, adminapi, "Lê e grava")
+BiRel(userext, deliverapi, "Lê e grava")
+BiRel(adminapi, postgresql, "Lê e grava")
+Rel(adminapi, rabbitmq, "Publica eventos")
+Rel(rabbitmq, worker,"Escuta eventos")
+Rel(worker, mongodb, "Grava eventos")
+BiRel(deliverapi, postgresql, "Lê e grava")
+
+
+SHOW_LEGEND()
+@enduml

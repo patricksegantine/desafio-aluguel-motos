@@ -1,18 +1,22 @@
-# Projeto de Locação de Motos
+# Projeto de LocaÃ§Ã£o de Motos
 
-## Descrição
+## DescriÃ§Ã£o
 
-Este projeto é uma plataforma de locação de motos que permite aos administradores cadastrar motos e aos entregadores alugar motos. A aplicação é composta por duas APIs: API Admin e API Deliverers e um Worker.
+Este projeto Ã© uma plataforma de locaÃ§Ã£o de motos que permite aos administradores cadastrar motos e aos entregadores alugar motos. A aplicaÃ§Ã£o Ã© composta por duas APIs: API Admin e API Deliverers e um Worker.
+
+## Arquitetura
+
+![Arquitetura](docs/diagrama-container.png "Arquitetura")
 
 ## Funcionalidades
 
 ### API Admin
 
 - **Cadastrar uma nova moto**
-  - Dados obrigatórios: Identificador, Ano, Modelo e Placa.
-  - A placa é um dado único e não pode se repetir.
+  - Dados obrigatÃ³rios: Fabricante, Modelo, Placa e Ano.
+  - A placa Ã© um dado Ãºnico e nÃ£o pode se repetir.
   - Gera um evento de moto cadastrada.
-  - Publica a notificação por mensageria.
+  - Publica a notificaÃ§Ã£o por mensageria.
   - Consumidor notifica quando o ano da moto for "2024" e armazena a mensagem no banco de dados para consulta futura.
 
 - **Consultar motos existentes**
@@ -22,63 +26,63 @@ Este projeto é uma plataforma de locação de motos que permite aos administradore
   - Permite alterar apenas a placa de uma moto cadastrada indevidamente.
 
 - **Remover uma moto**
-  - Permite remover uma moto que foi cadastrada incorretamente, desde que não tenha registro de locações.
+  - Permite remover uma moto que foi cadastrada incorretamente, desde que nÃ£o tenha registro de locaï¿½ï¿½es.
 
 
 ### API Deliverers
 - **Cadastrar entregador**
-  - Dados do entregador: Identificador, Nome, CNPJ, Data de Nascimento, Número da CNH, Tipo da CNH, Imagem da CNH.
-  - Tipos de CNH válidos: A, B ou ambas A+B.
-  - O CNPJ é único e não pode se repetir.
-  - O número da CNH é único e não pode se repetir.
+  - Dados do entregador: Identificador, Nome, CNPJ, Data de Nascimento, NÃºmero da CNH, Tipo da CNH, Imagem da CNH.
+  - Tipos de CNH vÃ¡lidos: A, B ou ambas A+B.
+  - O CNPJ Ã© Ãºnico e nÃ£o pode se repetir.
+  - O nï¿½mero da CNH Ã© Ãºnico e nÃ£o pode se repetir.
 
 - **Enviar foto da CNH**
   - Formatos permitidos: PNG ou BMP.
-  - A foto não é armazenada no banco de dados, mas em um serviço de storage (disco local, Amazon S3, MinIO ou outros).
+  - A foto nÃ£o deve armazenada no banco de dados, mas em um serviÃ§o de storage (disco local, Amazon S3, MinIO ou outros).
 
 - **Alugar uma moto**
-  - Planos disponíveis:
+  - Planos disponÃ­veis:
     - 7 dias com um custo de R$30,00 por dia.
     - 15 dias com um custo de R$28,00 por dia.
     - 30 dias com um custo de R$22,00 por dia.
     - 45 dias com um custo de R$20,00 por dia.
     - 50 dias com um custo de R$18,00 por dia.
-  - A locação deve ter uma data de início, uma data de término e uma data de previsão de término.
-  - O início da locação é o primeiro dia após a data de criação.
-  - Somente entregadores habilitados na categoria A podem efetuar uma locação.
+  - A locaÃ§Ã£o deve ter uma data de inÃ­cio, uma data de tÃ©rmino e uma data de previsÃ£o de tÃ©rmino.
+  - O inÃ­cio da locaÃ§Ã£o Ã© o primeiro dia apï¿½s a data de criaÃ§Ã£o.
+  - Somente entregadores habilitados na categoria A podem efetuar uma locaÃ§Ã£o.
 
-- **Informar data de devolução e consultar valor total da locação**
-  - Permite informar a data de devolução da moto e consultar o valor total da locação.
+- **Informar data de devoluÃ§Ã£o e consultar valor total da locaï¿½ï¿½o**
+  - Permite informar a data de devoluÃ§Ã£o da moto e consultar o valor total da locaÃ§Ã£o.
 
 ## Como Rodar Localmente
 
-### Pré-requisitos
+### PrÃ©-requisitos
 
 - Docker
 - Docker Compose
 
 ### Passos para Rodar
 
-1. Clone o repositório:
+1. Clone o repositï¿½rio:
    ```bash
    git clone https://github.com/patricksegantine/desafio-aluguel-motos.git
    cd seu-repositorio
    ```
-2. Configure o arquivo appsettings.json com as informações necessárias, incluindo o caminho de armazenamento para as fotos da CNH.
+2. Configure o arquivo appsettings.json com as informaÃ§Ãµes necessÃ¡rias, incluindo o caminho de armazenamento para as fotos da CNH.
 
-3. Execute o Docker Compose para iniciar os serviços:
+3. Execute o Docker Compose para iniciar os serviÃ§os de infraestrutura:
    ```bash
    docker compose up -d
    ```
 
-Isso irá iniciar os serviços do RabbitMQ, MongoDB, PostgreSQL e PgAdmin. O banco de dados será criado automaticamente e as migrations serão executadas automaticamente quando a API Admin subir.
+Isso irÃ¡ iniciar os serviÃ§os do RabbitMQ, MongoDB, PostgreSQL e PgAdmin. O banco de dados serÃ¡ criado automaticamente e as migrations serÃ£o executadas automaticamente quando vocÃª executar a API Admin.
 
-4. Acesse a API Admin e a API Deliverers conforme necessário para utilizar as funcionalidades descritas acima.
+4. Abra o Visual Studio e execute as aplicaÃ§Ãµes. Acesse a API Admin e a API Deliverers conforme necessÃ¡rio para utilizar as funcionalidades descritas acima.
 
-### Contribuição
+### ContribuiÃ§Ã£o
 
-Sinta-se à vontade para contribuir com o projeto. Para isso, faça um fork do repositório, crie uma branch para suas alterações e envie um pull request.
+Sinta-se Ã  vontade para contribuir com o projeto. Para isso, faÃ§aa um fork do repositÃ³rio, crie uma branch para suas alteraÃ§Ãµes e envie um pull request.
 
-### Licença
+### LicenÃ§a
 
-Este projeto está licenciado sob a licença MIT. Veja o arquivo LICENSE para mais detalhes
+Este projeto estÃ¡ licenciado sob a licenÃ§a MIT. Veja o arquivo LICENSE para mais detalhes
