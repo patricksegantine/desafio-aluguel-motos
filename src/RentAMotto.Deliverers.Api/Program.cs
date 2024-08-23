@@ -1,5 +1,5 @@
-using Microsoft.DependencyInjection.Extensions;
 using RentAMotto.Common.Api.Middlewares;
+using RentAMotto.Deliverers.Api;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

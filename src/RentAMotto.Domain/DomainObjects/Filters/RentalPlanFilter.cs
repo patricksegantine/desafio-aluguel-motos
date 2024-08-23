@@ -4,6 +4,5 @@ namespace RentAMotto.Domain.DomainObjects.Filters;
 
 public class RentalPlanFilter : FilterBase
 {
-    public VehicleType Type { get; set; }
-    public string? NumberPlate { get; set; }
+    public string? Description { get; set; }
 }

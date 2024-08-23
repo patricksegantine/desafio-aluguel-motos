@@ -30,9 +30,21 @@ public class VehicleRepository(MottoContext context) : IVehicleRepository
         if (!string.IsNullOrWhiteSpace(filter.NumberPlate))
             query = query.Where(v => v.NumberPlate == filter.NumberPlate);
 
-        query = query
-            .OrderBy(v => v.Make)
-            .ThenBy(v => v.Model);
+        if (!string.IsNullOrWhiteSpace(filter.Make))
+            query = query.Where(v => v.Make == filter.Make);
+
+        if (!string.IsNullOrWhiteSpace(filter.Model))
+            query = query.Where(v => v.Make == filter.Model);
+
+        if (filter.YearOfManufacture is not null)
+            query = query.Where(v => v.YearOfManufacture == filter.YearOfManufacture!.Value);
+
+        if (filter.Status is not null)
+            query = query.Where(v => v.Status == filter.Status!.Value);
+
+        query = query.Where(p => !p.Deleted)
+                    .OrderBy(v => v.Make)
+                    .ThenBy(v => v.Model);
 
         var totalCount = await query.CountAsync(cancellationToken);
 

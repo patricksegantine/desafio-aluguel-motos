@@ -8,8 +8,8 @@ public class RentalPlan : Entity
     public decimal CostPerDay { get; private set; }
     public decimal PercentageOfFineForReturnBeforeExpectedEndDatePerDay { get; private set; }
     public decimal AmountOfFineForReturnAfterExpectedEndDatePerDay { get; private set; }
-    public StatusType Status { get; set; }
-    public bool Deleted { get; set; }
+    public StatusType Status { get; private set; }
+    public bool Deleted { get; private set; }
 
     public static RentalPlan Create(
         string description,
@@ -29,5 +29,12 @@ public class RentalPlan : Entity
             UpdatedDate = null,
             Deleted = false,
         };
+    }
+
+    public void Delete()
+    {
+        Deleted = true;
+        Status = StatusType.Inactive;
+        UpdatedDate = DateTime.Now;
     }
 }

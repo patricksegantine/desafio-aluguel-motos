@@ -22,7 +22,7 @@ public class RentalContract : Entity
 
     public RentalContract()
     {
-        if (Status == RentalStatusType.Open)
+        if (Status == RentalStatusType.Open && RentalPlan != null)
         {
             RentalAmount = CalculateAmount(DateTime.Now);
             FineAmount = CalculateFine(DateTime.Now);

@@ -1,6 +1,6 @@
 ﻿namespace RentAMotto.Domain.Queries;
 
-public class DeliveryDriverSummary
+public record DeliveryDriverSummary
 {
     public int Id { get; set; }
     public string Name { get; set; } = default!;
