@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  mongodb:
+    image: "mongo"
+    ports:
+      - "27017:27017"
+
+  postgres:
+    image: "postgres"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: motto
+    volumes:
+      - ./scripts/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+ 
+  pgadmin:
+    image: "dpage/pgadmin4"
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - postgres
+
+  # admin-api:
+  #   build:
+  #     context: .
+  #     dockerfile: src/RentAMotto.Admin.Api/Dockerfile
+  #   ports:
+  #     - "5001:80"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - RabbitMQ__Host=rabbitmq
+  #     - PostgreSQL__ConnectionString=Host=postgres;Database=mydatabase;Username=admin;Password=admin
+
+  # deliverers-api:
+  #   build:
+  #     context: .
+  #     dockerfile: src/RentAMotto.Deliverers.Api/Dockerfile
+  #   ports:
+  #     - "5002:80"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - PostgreSQL__ConnectionString=Host=postgres;Database=mydatabase;Username=admin;Password=admin
+
+  # new-motto-consumer:
+  #   build:
+  #     context: .
+  #     dockerfile: src/RentAMotto.MottoCreatedConsumer.Worker/Dockerfile
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - RabbitMQ__Host=rabbitmq
+  #     - MongoDB__ConnectionString=mongodb://mongodb:27017
