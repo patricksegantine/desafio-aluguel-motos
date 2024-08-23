@@ -3,22 +3,29 @@ version: '3.8'
 services:
   rabbitmq:
     image: "rabbitmq:3-management"
+    container_name: rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - motto-network
 
   mongodb:
     image: "mongo"
+    container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
-      - ./scripts/mongodb:/docker-entrypoint-initdb.d 
+      - ./scripts/mongodb:/docker-entrypoint-initdb.d
+    networks:
+      - motto-network
 
   postgres:
     image: "postgres"
+    container_name: postgres
     ports:
       - "5432:5432"
     environment:
@@ -27,9 +34,17 @@ services:
       POSTGRES_DB: motto
     volumes:
       - ./scripts/postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
- 
+    networks:
+      - motto-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   pgadmin:
     image: "dpage/pgadmin4"
+    container_name: pgadmin
     ports:
       - "5050:80"
     environment:
@@ -37,33 +52,62 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
       - postgres
+    networks:
+      - motto-network
 
   # admin-api:
   #   build:
   #     context: .
   #     dockerfile: src/RentAMotto.Admin.Api/Dockerfile
+  #   image: admin-api
+  #   container_name: admin-api
   #   ports:
   #     - "5001:80"
   #   environment:
   #     - ASPNETCORE_ENVIRONMENT=Development
   #     - RabbitMQ__Host=rabbitmq
-  #     - PostgreSQL__ConnectionString=Host=postgres;Database=mydatabase;Username=admin;Password=admin
+  #     - RabbitMQ__Username=guest
+  #     - RabbitMQ__Password=guest
+  #     - PostgreSQL__ConnectionString=Host=postgres;Database=motto;Username=admin;Password=admin
+  #     - MongoDB__ConnectionString=mongodb://mongodb:27017
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   networks:
+  #     - motto-network
 
   # deliverers-api:
   #   build:
   #     context: .
   #     dockerfile: src/RentAMotto.Deliverers.Api/Dockerfile
+  #   image: deliverers-api
+  #   container_name: deliverers-api
   #   ports:
   #     - "5002:80"
   #   environment:
   #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - PostgreSQL__ConnectionString=Host=postgres;Database=mydatabase;Username=admin;Password=admin
+  #     - PostgreSQL__ConnectionString=Host=postgres;Database=motto;Username=admin;Password=admin
+  #     - MongoDB__ConnectionString=mongodb://mongodb:27017
+  #     - StoragePath=Data/driving-licence
+  #   networks:
+  #     - motto-network
 
-  # new-motto-consumer:
+  # consumer-worker:
   #   build:
   #     context: .
   #     dockerfile: src/RentAMotto.MottoCreatedConsumer.Worker/Dockerfile
+  #   image: consumer-worker
+  #   container_name: consumer-worker
   #   environment:
   #     - ASPNETCORE_ENVIRONMENT=Development
   #     - RabbitMQ__Host=rabbitmq
+  #     - RabbitMQ__Username=guest
+  #     - RabbitMQ__Password=guest
+  #     - RabbitMQ__QueueName=vehicle-created-queue
   #     - MongoDB__ConnectionString=mongodb://mongodb:27017
+  #     - MongoDB__DatabaseName=motto-db-dev
+  #   networks:
+  #     - motto-network
+
+networks:
+  motto-network:
