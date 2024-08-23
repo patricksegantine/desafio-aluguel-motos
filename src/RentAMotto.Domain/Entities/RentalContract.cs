@@ -45,8 +45,11 @@ public class RentalContract : Entity
         return new RentalContract
         {
             VehicleId = vehicle.Id,
+            Vehicle = vehicle,
             DeliveryDriverId = deliveryDriver.Id,
+            DeliveryDriver = deliveryDriver,
             RentalPlanId = rentalPlan.Id,
+            RentalPlan = rentalPlan,
             StartDate = startDate,
             ExpectedEndDate = expectedEndDate,
             EndDate = null,
@@ -106,10 +109,16 @@ public class RentalContract : Entity
     {
         decimal fineAmount = 0;
 
-        if (returnDate.Date < ExpectedEndDate.Date)
+        if (returnDate.Date < StartDate.Date)
+        {
+            // TODO: validar multa por cancelamento antes do início do contrato
+            var notUsedDays = (ExpectedEndDate.Date - StartDate.Date).Days;
+            fineAmount = notUsedDays * (RentalPlan.PercentageOfFineForReturnBeforeExpectedEndDatePerDay / 100) * RentalPlan.CostPerDay;
+        }
+        else if (returnDate.Date < ExpectedEndDate.Date)
         {
             var notUsedDays = (ExpectedEndDate.Date - returnDate.Date).Days;
-            fineAmount = notUsedDays * (RentalPlan.PercentageOfFineForReturnBeforeExpectedEndDatePerDay / 100);
+            fineAmount = notUsedDays * (RentalPlan.PercentageOfFineForReturnBeforeExpectedEndDatePerDay / 100) * RentalPlan.CostPerDay;
         }
         else if (returnDate.Date > ExpectedEndDate.Date)
         {
