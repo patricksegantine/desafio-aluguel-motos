@@ -24,10 +24,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Persistence\MongoDB\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\RentAMotto.Common.Abstraction\RentAMotto.Common.Abstraction.csproj" />
 	  <ProjectReference Include="..\RentAMotto.Domain\RentAMotto.Domain.csproj" />
 	</ItemGroup>

@@ -54,6 +54,7 @@ public class Vehicle : Entity
     public void Delete()
     {
         Deleted = true;
+        Status = StatusType.Inactive;
         UpdatedDate = DateTime.Now;
     }
 }

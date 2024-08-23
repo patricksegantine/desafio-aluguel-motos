@@ -38,8 +38,8 @@ public static class HostingExtensions
             {
                 cfg.Host(builder.Configuration["RabbitMQ:Host"]!, h =>
                 {
-                    h.Username("guest");
-                    h.Password("guest");
+                    h.Username(builder.Configuration["RabbitMQ:Username"]!);
+                    h.Password(builder.Configuration["RabbitMQ:Password"]!);
                 });
             });
         });

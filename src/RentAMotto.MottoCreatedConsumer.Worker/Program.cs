@@ -1,40 +1,13 @@
-using MassTransit;
 using Serilog;
 
-var configuration = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
-    .Build();
+var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
 
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(configuration)
-    .CreateLogger();
+builder.ConfigureServices();
 
-try
-{
-    Log.Information("Starting up the service");
+var app = builder.Build();
 
-    var host = Host.CreateDefaultBuilder(args)
-        .UseSerilog()
-        .ConfigureHost()
-        .Build();
+app.UseSerilogRequestLogging();
 
-    var busControl = host.Services.GetRequiredService<IBusControl>();
-
-    await busControl.StartAsync();
-
-    Log.Information("Bus started. Press any key to exit...");
-
-    await Task.Run(() => Console.ReadLine());
-
-    await busControl.StopAsync();
-
-    await host.RunAsync();
-}
-catch (Exception ex)
-{
-    Log.Fatal(ex, "There was a problem starting the service");
-}
-finally
-{
-    await Log.CloseAndFlushAsync();
-}
+await app.RunAsync();

@@ -3,7 +3,9 @@ using MassTransit;
 using RentAMotto.Domain;
 using RentAMotto.Domain.DomainObjects.Enums;
 using RentAMotto.Domain.Entities;
+using RentAMotto.Domain.Events;
 using RentAMotto.Domain.Repositories;
+using System.Threading;
 
 namespace RentAMotto.Admin.Application.UseCases.Motorcycle.Create;
 
@@ -31,7 +33,7 @@ public sealed class CreateMotorcycleUsecase(
         await _vehicleRepository.AddAsync(vehicle, cancellationToken);
 
         if (vehicle.YearOfManufacture == YEAR_OF_MANUFACTURE_TO_NOTIFY)
-            await _publishEndpoint.Publish(vehicle, cancellationToken);
+            await SendMessage(vehicle, cancellationToken);
 
         return new CreateMotorcycleResult { Id = vehicle.Id };
     }
@@ -47,5 +49,20 @@ public sealed class CreateMotorcycleUsecase(
             return (false, [ErrorCatalog.VehicleNumberPlateAlreadyRegisterd]);
 
         return (true, null);
+    }
+
+    private async Task SendMessage(Vehicle vehicle, CancellationToken cancellationToken)
+    {
+        var message = new VehicleCreatedEvent
+        {
+            Id = vehicle.Id,
+            Type = vehicle.Type,
+            Make = vehicle.Make,
+            Model = vehicle.Model,
+            NumberPlate = vehicle.NumberPlate,
+            YearOfManufacture = vehicle.YearOfManufacture,
+            CreatedDate = vehicle.CreatedDate,
+        };
+        await _publishEndpoint.Publish(message, cancellationToken);
     }
 }

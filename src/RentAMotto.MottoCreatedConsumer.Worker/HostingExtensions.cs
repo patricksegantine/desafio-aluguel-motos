@@ -1,39 +1,45 @@
 ﻿using MassTransit;
 using MongoDB.Driver;
+using RentAMotto.Domain.Interfaces;
+using RentAMotto.Infrastructure.Persistence.MongoDB;
 using RentAMotto.MottoCreatedConsumer.Worker.Consumers;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class HostingExtensions
 {
-    public static IHostBuilder ConfigureHost(this IHostBuilder builder)
+    public static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
     {
-        return builder.ConfigureServices((context, services) =>
+        builder.Services.AddControllers();
+
+        builder.Services.AddScoped<IEventStore, EventStore>();
+
+        builder.Services.AddMassTransit(x =>
         {
-            services.AddMassTransit(x =>
+            x.AddConsumer<VehicleCreatedConsumer>();
+
+            x.UsingRabbitMq((context, cfg) =>
             {
-                x.AddConsumer<VehicleCreatedConsumer>();
-
-                x.UsingRabbitMq((ctx, cfg) =>
+                var rabbitMqSettings = builder.Configuration.GetSection("RabbitMQ");
+                cfg.Host(rabbitMqSettings["Host"], h =>
                 {
-                    cfg.Host(context.Configuration["RabbitMQ:Host"], h =>
-                    {
-                        h.Username("guest");
-                        h.Password("guest");
-                    });
+                    h.Username(rabbitMqSettings["Username"]!);
+                    h.Password(rabbitMqSettings["Password"]!);
+                });
 
-                    cfg.ReceiveEndpoint(context.Configuration["RabbitMQ:QueueName"]!, e =>
-                    {
-                        e.ConfigureConsumer<VehicleCreatedConsumer>(ctx);
-                    });
+                cfg.ReceiveEndpoint(rabbitMqSettings["QueueName"]!, e =>
+                {
+                    e.ConfigureConsumer<VehicleCreatedConsumer>(context);
                 });
             });
-
-            services.AddSingleton<IMongoClient, MongoClient>(sp =>
-                new MongoClient(context.Configuration["MongoDB:ConnectionString"]!));
-
-            services.AddSingleton(sp =>
-                sp.GetRequiredService<IMongoClient>().GetDatabase(context.Configuration["MongoDB:DatabaseName"]!));
         });
+
+        builder.Services.AddSingleton<IMongoClient, MongoClient>(sp =>
+            new MongoClient(builder.Configuration["MongoDB:ConnectionString"]!));
+
+        builder.Services.AddSingleton(sp =>
+            sp.GetRequiredService<IMongoClient>().GetDatabase(builder.Configuration["MongoDB:DatabaseName"]!));
+
+        return builder;
     }
 }

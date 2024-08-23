@@ -9,7 +9,7 @@ public static class ErrorCatalog
     public static Error VehicleModelMustNotBeEmpty => Error.Validation("ERR-CODE-02", "Modelo deve ser preenchido");
     public static Error VehicleYearOfManufactureMustNotBeOldThan(int years) => Error.Validation("ERR-CODE-03", $"Não é possível cadastrar veículos com mais de {years} de uso");
     public static Error VehicleNumberPlateMustNotBeEmpty => Error.Validation("ERR-CODE-04", "A placa deve ser preenchida");
-    public static Error VehicleNumberPlateAlreadyRegisterd => Error.Validation("ERR-CODE-05", "A placa deve ser preenchida");
+    public static Error VehicleNumberPlateAlreadyRegisterd => Error.Validation("ERR-CODE-05", "Placa já cadastrada");
     public static Error VehicleNotFound => Error.Validation("ERR-CODE-06", "Veículo não encontrado");
     public static Error VehicleUnavailable => Error.Validation("ERR-CODE-07", "Veículo indisponível para locação no momento");
     public static Error VehicleCannotBeDeleted => Error.Validation("ERR-CODE-08", "Veículo não pode ser deletado, pois possui locações associadas");
